@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Function to check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Function to check if user has Admin role
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Function to check if user is Candidate
+    function isCandidate() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'candidate';
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // Candidates Collection
+    match /candidates/{candidateId} {
+      // Admins can read (or list) candidates
+      allow read: if isAdmin() || (isCandidate() && request.auth.uid == resource.data.uid);
+      // Candidates create their own resume entry
+      allow create: if isCandidate() && request.auth.uid == request.resource.data.uid;
+      // Admins can do anything
+      allow write: if isAdmin();
+    }
+    
+    // Job Roles Collection
+    match /job_roles/{jobId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Default fallback
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

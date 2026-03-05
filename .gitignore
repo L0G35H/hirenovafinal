@@ -1,0 +1,17 @@
+# Firebase service account keys (NEVER commit these)
+firebase-service-account.json
+serviceAccountKey.json
+*.json.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – TalentLens Admin</title>
+    <link rel="icon" href="data:,">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body class="bg-slate-100" style="font-family:'Inter',sans-serif">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar flex flex-col py-6" id="sidebar">
+            <div class="px-5 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style="background:var(--gold)">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-black text-base">TalentLens</div>
+                        <div class="text-xs" style="color:rgba(245,158,11,0.8)">KGiSL Portal</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 space-y-1">
+                <a href="/dashboard.html" class="sidebar-link active">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/upload.html" class="sidebar-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Upload Resume
+                </a>
+                <a href="/candidates.html" class="sidebar-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Candidates
+                </a>
+                <a href="/jobs.html" class="sidebar-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Job Roles
+                </a>
+            </nav>
+            <div class="px-4 py-4 border-t border-white/10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                        style="background:var(--gold)">A</div>
+                    <div>
+                        <div class="text-white text-sm font-semibold" id="sidebarUser">Admin</div>
+                        <div class="text-slate-400 text-xs">Administrator</div>
+                    </div>
+                </div>
+                <button id="logoutBtn"
+                    class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <!-- Top Bar -->
+            <header
+                class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+                <div>
+                    <h1 class="text-xl font-bold" style="color:var(--navy)">Analytics Dashboard</h1>
+                    <p class="text-slate-400 text-sm">Welcome back, <span id="headerUser">Admin</span></p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-slate-400 text-sm" id="dashboardDate"></span>
+                    <a href="/upload.html" class="btn-primary text-sm py-2 px-4">+ Upload Resume</a>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="kpi-card kpi-navy animate-fade-up delay-100">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Total Resumes
+                                </p>
+                                <p class="text-4xl font-black mt-1" style="color:var(--navy)" id="kpiTotal">—</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(26,45,90,0.08)">
+                                <svg class="w-6 h-6" style="color:var(--navy)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-3">Resumes uploaded to platform</p>
+                    </div>
+                    <div class="kpi-card kpi-teal animate-fade-up delay-200">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Analyzed</p>
+                                <p class="text-4xl font-black mt-1" style="color:var(--teal)" id="kpiAnalyzed">—</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(13,148,136,0.08)">
+                                <svg class="w-6 h-6" style="color:var(--teal)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-3">Successfully processed</p>
+                    </div>
+                    <div class="kpi-card kpi-gold animate-fade-up delay-300">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Avg. Score</p>
+                                <p class="text-4xl font-black mt-1" style="color:var(--gold)" id="kpiAvg">—</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(245,158,11,0.08)">
+                                <svg class="w-6 h-6" style="color:var(--gold)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-3">Average candidate score</p>
+                    </div>
+                    <div class="kpi-card kpi-green animate-fade-up delay-400">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Active Jobs</p>
+                                <p class="text-4xl font-black mt-1 text-green-600" id="kpiJobs">—</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-green-50">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-3">Job roles configured</p>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Skill Frequency Bar Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="section-header">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style="background:rgba(26,45,90,0.08)">
+                                <svg class="w-4 h-4" style="color:var(--navy)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <h2>Top Skills in Candidate Pool</h2>
+                        </div>
+                        <div style="height:280px"><canvas id="skillChart"></canvas></div>
+                    </div>
+                    <!-- Score Distribution Donut -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="section-header">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style="background:rgba(13,148,136,0.08)">
+                                <svg class="w-4 h-4" style="color:var(--teal)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" stroke-width="2" />
+                                    <path stroke-linecap="round" stroke-width="2" d="M12 6v6l4 2" />
+                                </svg>
+                            </div>
+                            <h2>Score Distribution</h2>
+                        </div>
+                        <div style="height:220px"><canvas id="scoreChart"></canvas></div>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+                            <div class="flex items-center gap-1"><span
+                                    class="w-3 h-3 rounded-full inline-block bg-red-400"></span>0–40%</div>
+                            <div class="flex items-center gap-1"><span
+                                    class="w-3 h-3 rounded-full inline-block bg-yellow-400"></span>40–60%</div>
+                            <div class="flex items-center gap-1"><span
+                                    class="w-3 h-3 rounded-full inline-block bg-blue-400"></span>60–80%</div>
+                            <div class="flex items-center gap-1"><span
+                                    class="w-3 h-3 rounded-full inline-block bg-green-500"></span>80–100%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Candidates Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                        <div class="section-header mb-0 pb-0 border-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style="background:rgba(245,158,11,0.08)">
+                                <svg class="w-4 h-4" style="color:var(--gold)" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h2>Top Ranked Candidates</h2>
+                        </div>
+                        <a href="/candidates.html" class="text-sm font-semibold" style="color:var(--navy)">View All
+                            →</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Candidate</th>
+                                    <th>Job Role</th>
+                                    <th>Score</th>
+                                    <th>Matched Skills</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topCandidatesBody">
+                                <tr>
+                                    <td colspan="6" class="text-center py-8 text-slate-400">Loading candidates…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ── Achievement Intelligence Summary ────────────────────────────── -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <div class="section-header mb-0 pb-0 border-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style="background:rgba(13,148,136,0.08)">
+                                <span class="text-base">🧠</span>
+                            </div>
+                            <h2>Resume Intelligence Summary</h2>
+                        </div>
+                    </div>
+                    <div class="p-6 grid md:grid-cols-3 gap-6">
+
+                        <!-- Top Projects -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-lg">📁</span>
+                                <h3 class="font-bold text-sm uppercase tracking-wider" style="color:var(--navy)">Top
+                                    Projects</h3>
+                            </div>
+                            <div id="topProjectsList" class="space-y-2">
+                                <p class="text-slate-400 text-sm">Loading…</p>
+                            </div>
+                        </div>
+
+                        <!-- Top Certifications -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-lg">🎓</span>
+                                <h3 class="font-bold text-sm uppercase tracking-wider" style="color:var(--navy)">Top
+                                    Certifications</h3>
+                            </div>
+                            <div id="topCertsList" class="space-y-2">
+                                <p class="text-slate-400 text-sm">Loading…</p>
+                            </div>
+                        </div>
+
+                        <!-- Top Achievements -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-lg">🏆</span>
+                                <h3 class="font-bold text-sm uppercase tracking-wider" style="color:var(--navy)">Top
+                                    Achievements</h3>
+                            </div>
+                            <div id="topAchievesList" class="space-y-2">
+                                <p class="text-slate-400 text-sm">Loading…</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/static/js/role-check.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>

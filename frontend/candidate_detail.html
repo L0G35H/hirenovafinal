@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Analysis – TalentLens</title>
+    <link rel="icon" href="data:,">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body class="bg-slate-100" style="font-family:'Inter',sans-serif">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar flex flex-col py-6">
+            <div class="px-5 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style="background:var(--gold)">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-white font-black text-base">TalentLens</div>
+                        <div class="text-xs" style="color:rgba(245,158,11,0.8)">KGiSL Portal</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 space-y-1">
+                <a href="/dashboard.html" class="sidebar-link"><svg fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>Dashboard</a>
+                <a href="/upload.html" class="sidebar-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>Upload Resume</a>
+                <a href="/candidates.html" class="sidebar-link active"><svg fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>Candidates</a>
+                <a href="/jobs.html" class="sidebar-link"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>Job Roles</a>
+            </nav>
+            <div class="px-4 py-4 border-t border-white/10">
+                <button id="logoutBtn"
+                    class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-auto">
+            <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center gap-4">
+                <a href="/candidates.html" class="text-slate-400 hover:text-slate-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+                <div>
+                    <h1 class="text-xl font-bold" style="color:var(--navy)" id="detailName">Candidate Analysis</h1>
+                    <p class="text-slate-400 text-sm" id="detailRole">Loading…</p>
+                </div>
+            </header>
+
+            <div class="p-8">
+                <div id="loadingState" class="text-center py-16 text-slate-400">
+                    <div class="loader-spinner mx-auto mb-4"
+                        style="position:static;width:48px;height:48px;border-width:4px"></div>
+                    <p>Loading candidate data…</p>
+                </div>
+
+                <div id="detailContent" class="hidden grid lg:grid-cols-5 gap-8">
+                    <!-- Left: Info + Score -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Profile Card -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-4 mb-5">
+                                <div class="w-14 h-14 rounded-full flex items-center justify-center text-xl font-black text-white flex-shrink-0"
+                                    style="background:linear-gradient(135deg,var(--navy),var(--teal))"
+                                    id="detailAvatar">A</div>
+                                <div>
+                                    <h2 class="font-bold text-lg" style="color:var(--navy)" id="detailNameCard">—</h2>
+                                    <p class="text-slate-500 text-sm" id="detailJobCard">—</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Email</span><span
+                                        class="font-medium text-slate-700" id="detailEmail">—</span></div>
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Phone</span><span
+                                        class="font-medium text-slate-700" id="detailPhone">—</span></div>
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Education</span><span
+                                        class="font-medium text-slate-700" id="detailEdu">—</span></div>
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Experience</span><span
+                                        class="font-medium text-slate-700" id="detailExp">—</span></div>
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Uploaded</span><span
+                                        class="font-medium text-slate-700" id="detailDate">—</span></div>
+                                <div class="flex gap-2"><span class="text-slate-400 w-24">Method</span><span
+                                        class="font-medium text-slate-700" id="detailMethod">—</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Score Gauge -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center">
+                            <h3 class="font-bold text-lg mb-4" style="color:var(--navy)">Match Score</h3>
+                            <div class="relative w-40 h-40 mx-auto mb-4">
+                                <svg class="w-40 h-40 -rotate-90" viewBox="0 0 140 140">
+                                    <circle cx="70" cy="70" r="60" fill="none" stroke="#e2e8f0" stroke-width="12" />
+                                    <circle cx="70" cy="70" r="60" fill="none" stroke="url(#scoreGrad)"
+                                        stroke-width="12" stroke-linecap="round" stroke-dasharray="377" id="scoreArc"
+                                        stroke-dashoffset="377" />
+                                </svg>
+                                <defs>
+                                    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#0d9488" />
+                                        <stop offset="100%" style="stop-color:#10b981" />
+                                    </linearGradient>
+                                </defs>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-3xl font-black" style="color:var(--navy)"
+                                        id="detailScore">—</span>
+                                    <span class="text-xs text-slate-400">match score</span>
+                                </div>
+                            </div>
+                            <div id="qualifiedBadge"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold">—</div>
+                            <!-- Score breakdown bar -->
+                            <div class="mt-4 text-left">
+                                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                    <span>Matched: <span id="matchedNum"
+                                            class="font-bold text-green-600">0</span></span>
+                                    <span>Required: <span id="requiredNum" class="font-bold"
+                                            style="color:var(--navy)">0</span></span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="scoreBar"
+                                        style="width:0%;background:linear-gradient(90deg,#0d9488,#10b981)"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resume Link -->
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100" id="resumeLinkCard">
+                            <h3 class="font-bold mb-3" style="color:var(--navy)">Resume File</h3>
+                            <a id="resumeLink" href="#" target="_blank"
+                                class="btn-navy w-full text-center py-3 block text-sm">
+                                📄 View / Download Resume
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Skill Analysis -->
+                    <div class="lg:col-span-3 space-y-6">
+                        <!-- Matched Skills -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">✅</span>
+                                <h3 class="font-bold text-lg" style="color:var(--navy)">Matched Skills</h3>
+                                <span class="ml-auto score-badge score-excellent" id="matchedBadge">0</span>
+                            </div>
+                            <div id="detailMatchedSkills" class="flex flex-wrap gap-2"></div>
+                            <div id="matchedEmpty" class="hidden text-slate-400 text-sm">No skills matched.</div>
+                        </div>
+
+                        <!-- Missing Skills -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">❌</span>
+                                <h3 class="font-bold text-lg text-red-600">Missing Skills</h3>
+                                <span class="ml-auto score-badge score-poor" id="missingBadge">0</span>
+                            </div>
+                            <div id="detailMissingSkills" class="flex flex-wrap gap-2"></div>
+                            <div id="missingEmpty" class="hidden text-slate-400 text-sm">All required skills are
+                                present! 🎉</div>
+                        </div>
+
+                        <!-- All Detected Skills by Category -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">🔍</span>
+                                <h3 class="font-bold text-lg" style="color:var(--teal)">All Detected Skills by Category
+                                </h3>
+                            </div>
+                            <div id="detailSkillsByCategory" class="space-y-4"></div>
+                        </div>
+
+                        <!-- ── Achievement Intelligence Cards ─────────────────── -->
+
+                        <!-- Major Projects -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">📁</span>
+                                <h3 class="font-bold text-lg" style="color:var(--navy)">Major Projects</h3>
+                                <span class="ml-auto score-badge" id="projectsBadge"
+                                    style="background:#ede9fe;color:#5b21b6">0</span>
+                            </div>
+                            <div id="detailProjects" class="flex flex-wrap gap-2"></div>
+                            <div id="projectsEmpty" class="hidden text-slate-400 text-sm">No projects detected.</div>
+                        </div>
+
+                        <!-- Certifications -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">🎓</span>
+                                <h3 class="font-bold text-lg" style="color:var(--navy)">Certifications</h3>
+                                <span class="ml-auto score-badge" id="certsBadge"
+                                    style="background:#dbeafe;color:#1e40af">0</span>
+                            </div>
+                            <div id="detailCerts" class="flex flex-wrap gap-2"></div>
+                            <div id="certsEmpty" class="hidden text-slate-400 text-sm">No certifications detected.</div>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="text-2xl">🏆</span>
+                                <h3 class="font-bold text-lg" style="color:var(--gold)">Achievements</h3>
+                                <span class="ml-auto score-badge" id="achievesBadge"
+                                    style="background:#fef3c7;color:#92400e">0</span>
+                            </div>
+                            <div id="detailAchieves" class="flex flex-wrap gap-2"></div>
+                            <div id="achievesEmpty" class="hidden text-slate-400 text-sm">No achievements detected.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/static/js/role-check.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const candidateId = urlParams.get('id');
+
+        async function loadCandidate() {
+            if (!candidateId) {
+                window.location.href = '/candidates.html';
+                return;
+            }
+            try {
+                const res = await fetch(`/api/candidates/${candidateId}`, { headers: authHeader() });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail);
+
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('detailContent').classList.remove('hidden');
+
+                // Populate
+                document.getElementById('detailName').textContent = data.name;
+                document.getElementById('detailRole').textContent = data.job_role;
+                document.getElementById('detailNameCard').textContent = data.name;
+                document.getElementById('detailJobCard').textContent = data.job_role;
+                document.getElementById('detailAvatar').textContent = data.name[0].toUpperCase();
+                document.getElementById('detailEmail').textContent = data.email || '—';
+                document.getElementById('detailPhone').textContent = data.phone || '—';
+                document.getElementById('detailEdu').textContent = data.education || '—';
+                document.getElementById('detailExp').textContent = data.experience || '—';
+                document.getElementById('detailDate').textContent = new Date(data.upload_date).toLocaleDateString();
+                document.getElementById('detailMethod').textContent = data.extraction_method || '—';
+                document.getElementById('detailScore').textContent = data.score + '%';
+
+                // Score arc
+                const arc = document.getElementById('scoreArc');
+                const offset = 377 - (377 * data.score / 100);
+                setTimeout(() => arc.style.strokeDashoffset = offset, 100);
+
+                // Progress bar
+                const matched = (data.matched_skills || []).length;
+                const missing = (data.missing_skills || []).length;
+                const required = matched + missing;
+                document.getElementById('matchedNum').textContent = matched;
+                document.getElementById('requiredNum').textContent = required;
+                document.getElementById('matchedBadge').textContent = matched;
+                document.getElementById('missingBadge').textContent = missing;
+                setTimeout(() => {
+                    document.getElementById('scoreBar').style.width = data.score + '%';
+                }, 200);
+
+                // Qualified badge
+                const qb = document.getElementById('qualifiedBadge');
+                if (data.score >= 60) {
+                    qb.textContent = '🏆 Qualified Candidate';
+                    qb.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold score-excellent';
+                } else {
+                    qb.textContent = '⚠️ Below Threshold';
+                    qb.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold score-poor';
+                }
+
+                // Resume link
+                if (data.resume_url) {
+                    document.getElementById('resumeLink').href = data.resume_url;
+                } else {
+                    document.getElementById('resumeLinkCard').classList.add('hidden');
+                }
+
+                // Matched skills
+                const matchEl = document.getElementById('detailMatchedSkills');
+                if (data.matched_skills?.length) {
+                    matchEl.innerHTML = data.matched_skills.map(s => `<span class="skill-chip skill-matched">${s}</span>`).join('');
+                } else {
+                    document.getElementById('matchedEmpty').classList.remove('hidden');
+                }
+
+                // Missing skills
+                const missEl = document.getElementById('detailMissingSkills');
+                if (data.missing_skills?.length) {
+                    missEl.innerHTML = data.missing_skills.map(s => `<span class="skill-chip skill-missing">${s}</span>`).join('');
+                } else {
+                    document.getElementById('missingEmpty').classList.remove('hidden');
+                }
+
+                // Skills by category
+                const catEl = document.getElementById('detailSkillsByCategory');
+                const cats = data.skill_categories || {};
+                if (Object.keys(cats).length) {
+                    catEl.innerHTML = Object.entries(cats).map(([cat, skills]) => `
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">${cat}</p>
+          <div class="flex flex-wrap gap-1">${skills.map(s => `<span class="skill-chip skill-detected">${s}</span>`).join('')}</div>
+        </div>
+      `).join('');
+                } else {
+                    catEl.innerHTML = '<p class="text-slate-400 text-sm">No skills categorized.</p>';
+                }
+
+                // ── Achievement Intelligence Rendering ────────────────────────────────
+
+                // Major Projects
+                const projects = data.projects || [];
+                document.getElementById('projectsBadge').textContent = projects.length;
+                if (projects.length) {
+                    document.getElementById('detailProjects').innerHTML = projects.map(p =>
+                        `<span class="skill-chip" style="background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd">📁 ${p}</span>`
+                    ).join('');
+                } else {
+                    document.getElementById('projectsEmpty').classList.remove('hidden');
+                }
+
+                // Certifications
+                const certs = data.certifications || [];
+                document.getElementById('certsBadge').textContent = certs.length;
+                if (certs.length) {
+                    document.getElementById('detailCerts').innerHTML = certs.map(c =>
+                        `<span class="skill-chip" style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd">🎓 ${c}</span>`
+                    ).join('');
+                } else {
+                    document.getElementById('certsEmpty').classList.remove('hidden');
+                }
+
+                // Achievements
+                const achieves = data.achievements || [];
+                document.getElementById('achievesBadge').textContent = achieves.length;
+                if (achieves.length) {
+                    document.getElementById('detailAchieves').innerHTML = achieves.map(a =>
+                        `<span class="skill-chip" style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d">🏆 ${a}</span>`
+                    ).join('');
+                } else {
+                    document.getElementById('achievesEmpty').classList.remove('hidden');
+                }
+            } catch (e) {
+                document.getElementById('loadingState').innerHTML = `<p class="text-red-500">Error: ${e.message}</p>`;
+            }
+        }
+
+        loadCandidate();
+    </script>
+</body>
+
+</html>
