@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Portal – TalentLens</title>
+    <meta name="description" content="Submit your resume to KGiSL Placement Portal powered by TalentLens AI." />
+    <link rel="icon" href="data:,">
+    <!-- Suppress Tailwind CDN production warning to keep console clean -->
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function () {
+            if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+            originalWarn.apply(console, arguments);
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4"
+    style="background:linear-gradient(135deg,#0f1e3d 0%,#1a2d5a 45%,#0d9488 100%);font-family:'Inter',sans-serif">
+
+    <!-- ── Floating background blobs ───────────────────────────────────────── -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-10"
+            style="background:radial-gradient(circle,#f59e0b,transparent)"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full opacity-10"
+            style="background:radial-gradient(circle,#0d9488,transparent)"></div>
+    </div>
+
+    <!-- ── Main card ────────────────────────────────────────────────────────── -->
+    <div class="w-full max-w-lg relative z-10">
+
+        <!-- Logo / Header -->
+        <div class="text-center mb-6 animate-fade-up">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 animate-pulse-glow"
+                style="background:linear-gradient(135deg,var(--gold),#e08600)">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-black text-white tracking-tight">TalentLens</h1>
+            <p class="text-sm font-medium mt-1" style="color:rgba(245,158,11,0.85)">Candidate Portal · KGiSL Placement
+            </p>
+        </div>
+
+        <!-- ── AUTH SECTION (shown when logged out) ─────────────────────────── -->
+        <div id="authSection" class="glass-card p-8 animate-fade-up delay-100">
+            <h2 class="text-xl font-bold text-white text-center mb-2">Sign in to Continue</h2>
+            <p class="text-center text-sm mb-6" style="color:rgba(255,255,255,0.6)">Use your college email to submit
+                your resume</p>
+
+            <!-- Tab switcher -->
+            <div class="hidden" id="authError"
+                style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;color:#fca5a5;font-size:0.875rem">
+            </div>
+
+            <!-- Email / Password form -->
+            <form id="loginForm" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color:rgba(255,255,255,0.7)">Email
+                        Address</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required
+                        class="w-full px-4 py-3 rounded-xl text-sm border-0 outline-none transition focus:ring-2 placeholder-white/40"
+                        style="background:rgba(255,255,255,0.1);color:#fff;--tw-ring-color:rgba(245,158,11,0.6)" />
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color:rgba(255,255,255,0.7)">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required
+                        class="w-full px-4 py-3 rounded-xl text-sm border-0 outline-none transition focus:ring-2 placeholder-white/40"
+                        style="background:rgba(255,255,255,0.1);color:#fff;--tw-ring-color:rgba(245,158,11,0.6)" />
+                </div>
+                <button type="submit" id="loginBtn"
+                    class="w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:-translate-y-0.5"
+                    style="background:linear-gradient(135deg,var(--gold),#e08600);color:#1a1a1a;box-shadow:0 4px 20px rgba(245,158,11,0.35)">
+                    Sign In as Candidate
+                </button>
+            </form>
+
+            <!-- Google Sign-In as requested -->
+            <div class="flex items-center gap-3 my-4">
+                <div class="flex-1 h-px" style="background:rgba(255,255,255,0.15)"></div>
+                <span class="text-xs" style="color:rgba(255,255,255,0.4)">or</span>
+                <div class="flex-1 h-px" style="background:rgba(255,255,255,0.15)"></div>
+            </div>
+
+            <div class="mt-4">
+                <button id="google-login-btn"
+                    class="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                    Continue with Google
+                </button>
+            </div>
+        </div>
+
+        <!-- ── UPLOAD SECTION (shown when logged in) ────────────────────────── -->
+        <div id="uploadSection" class="hidden animate-fade-up delay-100">
+
+            <!-- User bar -->
+            <div class="glass-card px-5 py-3 mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white"
+                        style="background:linear-gradient(135deg,var(--navy),var(--teal))" id="userAvatar">?</div>
+                    <span class="text-sm font-medium text-white" id="userEmail">Loading…</span>
+                </div>
+                <button id="signOutBtn"
+                    class="text-xs font-semibold px-3 py-1.5 rounded-lg transition hover:bg-white/10"
+                    style="color:rgba(255,255,255,0.6)">Sign Out</button>
+            </div>
+
+            <!-- Upload card -->
+            <div class="glass-card-light p-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-black mb-1" style="color:var(--navy)">Submit Your Resume</h2>
+                    <p class="text-slate-500 text-sm">Upload your PDF resume to be considered for placement
+                        opportunities</p>
+                </div>
+
+                <!-- Status banner — hidden by default -->
+                <div id="statusBanner" class="hidden rounded-xl p-4 mb-5 text-sm font-semibold text-center"></div>
+
+                <!-- Form -->
+                <form id="uploadForm" class="space-y-4" novalidate>
+
+                    <!-- Name + Phone row -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" id="candName" class="form-input" placeholder="John Doe" required />
+                        </div>
+                        <div>
+                            <label class="form-label">Phone</label>
+                            <input type="tel" id="candPhone" class="form-input" placeholder="9876543210" />
+                        </div>
+                    </div>
+
+                    <!-- Education + Experience row -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Education</label>
+                            <input type="text" id="candEdu" class="form-input" placeholder="B.E / B.Tech" />
+                        </div>
+                        <div>
+                            <label class="form-label">Experience</label>
+                            <select id="candExp" class="form-input">
+                                <option value="Fresher">Fresher</option>
+                                <option value="0-1 years">0–1 years</option>
+                                <option value="1-3 years">1–3 years</option>
+                                <option value="3-5 years">3–5 years</option>
+                                <option value="5+ years">5+ years</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Job Role -->
+                    <div>
+                        <label class="form-label">Applying For *</label>
+                        <select id="jobRoleSelect" class="form-input" required>
+                            <option value="">Loading available roles…</option>
+                        </select>
+                    </div>
+
+                    <!-- Drag-and-drop zone -->
+                    <div>
+                        <label class="form-label">Resume (PDF only, max 10MB) *</label>
+                        <div id="dropZone" class="drop-zone relative cursor-pointer"
+                            onclick="document.getElementById('resumeFile').click()">
+                            <input type="file" id="resumeFile" accept=".pdf" class="hidden" />
+                            <div id="dropDefault">
+                                <svg class="w-10 h-10 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" style="color:var(--navy)">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <p class="font-semibold text-sm" style="color:var(--navy)">Drag & drop your resume here
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">or click to browse files</p>
+                            </div>
+                            <div id="fileInfo" class="hidden">
+                                <span class="text-2xl">📄</span>
+                                <p class="font-bold text-sm mt-1" style="color:var(--navy)" id="fileName">file.pdf</p>
+                                <p class="text-xs text-slate-400" id="fileSize"></p>
+                                <button type="button" onclick="event.stopPropagation();clearFile()"
+                                    class="mt-2 text-xs text-red-400 hover:text-red-600 font-semibold">✕ Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div id="progressWrap" class="hidden">
+                        <div class="flex justify-between text-xs text-slate-500 mb-1">
+                            <span id="progressMsg">Uploading…</span>
+                            <span id="progressPct">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progressBar" class="progress-fill"
+                                style="width:0%;background:linear-gradient(90deg,var(--navy),var(--teal))"></div>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" id="submitBtn"
+                        class="w-full py-3.5 rounded-xl font-bold text-base transition-all duration-200"
+                        style="background:linear-gradient(135deg,var(--navy),#1e3a7a);color:#fff;box-shadow:0 4px 20px rgba(26,45,90,0.4)">
+                        🚀 Submit Resume
+                    </button>
+                </form>
+
+                <!-- Already submitted state (shown after success, hides form) -->
+                <div id="successState" class="hidden text-center py-6">
+                    <div class="text-5xl mb-4">✅</div>
+                    <h3 class="text-xl font-black mb-2" style="color:var(--navy)">Resume Submitted!</h3>
+                    <p class="text-slate-500 text-sm mb-1">Your profile is under review by the placement team.</p>
+                    <p class="text-slate-400 text-xs">You will be contacted if shortlisted. No further action needed.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-xs mt-6" style="color:rgba(255,255,255,0.35)">
+            TalentLens · KGiSL Institute of Technology · Placement Portal
+        </p>
+    </div>
+
+    <!-- ── Scripts ──────────────────────────────────────────────────────────── -->
+    <script type="module" src="/static/js/candidate-upload.js"></script>
+</body>
+
+</html>
